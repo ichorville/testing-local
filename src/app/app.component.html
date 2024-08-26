@@ -1,0 +1,9 @@
+<h1>Products</h1>
+
+<h5>Getting data from Declarative pattern</h5>
+
+@if (products$ | async; as products) {
+{{ products | json }}
+} @else {
+  <p>loading products ....</p>
+}
