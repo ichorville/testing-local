@@ -29,7 +29,7 @@ yarn-error.log
 .history/*
 
 # Miscellaneous
-/.angular/cache
+/.angular
 .sass-cache/
 /connect.lock
 /coverage
@@ -37,6 +37,7 @@ yarn-error.log
 testem.log
 /typings
 eslint.config.mjs
+/.vscode
 
 # System files
 .DS_Store
