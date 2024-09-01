@@ -1,0 +1,46 @@
+<div class="container p-4">
+  @if (viewModel | async; as vm) {
+  <div class="flex">
+    <div class="w-1/2">
+      <mat-form-field class="w-full">
+        <mat-label>Choose a user</mat-label>
+        <!-- Problem with setting mat-select value: revisit logic -->
+        <mat-select [(value)]="vm.currentUser" (selectionChange)="onUserSelection($event)">
+          <ng-container *ngFor="let user of vm.users">
+            <mat-option [value]="user.name">{{ user.name }}</mat-option>
+          </ng-container>
+        </mat-select>
+      </mat-form-field>
+      <!-- {{vm.currentUser | json}} -->
+    </div>
+    <div class="w-1/2">
+      <mat-checkbox class="example-margin" [disabled]="!vm.currentUser || vm.isLoading" (change)="filterTodos($event)"
+        >Filter incomplete todos</mat-checkbox
+      >
+    </div>
+  </div>
+
+  @if (vm.isLoading) {
+  <p>Loading current user ...</p>
+  } @else { @if (vm.currentUser; as user) {
+  <div class="flex">
+    <p class="!mr-4">{{ user.name }}</p>
+    <p>{{ user.university }}</p>
+  </div>
+  <div class="inline-block w-full">
+    @if (vm.isFiltered) { @if (user.filteredTodos; as todos) {
+    <mat-selection-list #list [disableRipple]="true">
+      @for (todo of todos; track todo) {
+      <mat-list-option [selected]="true">{{ todo.todo }}</mat-list-option>
+      }
+    </mat-selection-list>
+    } } @else { @if (user.todos; as todos) {
+    <mat-selection-list #list [disableRipple]="true" (click)="onToggle(vm.currentUser, list)">
+      @for (todo of todos; track todo) {
+      <mat-list-option [value]="todo" [selected]="todo.completed">{{ todo.todo }}</mat-list-option>
+      }
+    </mat-selection-list>
+    } }
+  </div>
+  } } }
+</div>
