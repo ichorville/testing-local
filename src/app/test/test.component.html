@@ -1,0 +1,63 @@
+<h1>Products</h1>
+
+<h5>Getting data from Declarative pattern</h5>
+
+@if (products$ | async; as products) {
+{{ products | json }}
+} @else {
+<p>loading products ....</p>
+}
+
+<hr />
+
+<h1>Signals</h1>
+
+<p>{{ calculatedPrice }}</p>
+
+<p>{{ this._testService.calculated() }}</p>
+
+<hr />
+
+<h1>combineLatest</h1>
+
+@if (productViewModel | async; as vm) {
+{{ vm.products | json }}
+} @else {
+<p>combineLatest View Model Loading</p>
+}
+
+<hr />
+
+<h1>Advanced Signal</h1>
+
+<!-- @if (productViewModelSignal() | async; as vm) {
+{{ vm | json }}
+} @else {
+<p>Signal View Model Loading</p>
+} -->
+
+@if (productViewModelSignal(); as vm) { @if (vm.products | async; as products) {
+<div *ngFor="let product of products">
+  <p>{{ product.value }}</p>
+</div>
+} @else {
+<p>Loading Products</p>
+} @if (vm.applications | async; as applications) {
+<div *ngFor="let application of applications">
+  <p>{{ application.value }}</p>
+</div>
+} @else {
+<p>Loading Applications</p>
+} } @else {
+<p>Loading View model</p>
+}
+
+<hr />
+
+{{ productSignal() | json }}
+
+@if (productSignal(); as products) { @for (product of products; track product) {
+<p>{{ product.key }}</p>
+} } @else {
+<p>Products Loading</p>
+}
