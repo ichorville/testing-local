@@ -1,16 +1,14 @@
-import { Component, inject, ViewChild } from '@angular/core';
+import { Component, inject, model, ViewChild } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
-import { AsyncPipe, NgFor, JsonPipe } from '@angular/common';
+import { AsyncPipe, NgFor, JsonPipe, NgIf } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatListModule, MatListOption, MatSelectionList } from '@angular/material/list';
-
-import { combineLatest, Observable } from 'rxjs';
+import { MatListModule, MatListOption } from '@angular/material/list';
 
 import { TodoSignalsService } from './todo-signals.service';
-import { Todo, User, ViewModel } from './todo-signals.model';
 
 @Component({
   selector: 'app-todo',
@@ -19,6 +17,8 @@ import { Todo, User, ViewModel } from './todo-signals.model';
     AsyncPipe,
     NgFor,
     JsonPipe,
+    FormsModule,
+    NgIf,
     HttpClientModule,
     MatCheckboxModule,
     MatSelectModule,
@@ -32,26 +32,18 @@ export class TodoSignalsComponent {
   @ViewChild('list') public list!: MatListOption;
   private _todoService = inject(TodoSignalsService);
 
-  public viewModel: Observable<ViewModel> = combineLatest({
-    users: this._todoService.users$,
-    currentUser: this._todoService.currentUser$,
-    isLoading: this._todoService.isLoading$,
-    isFiltered: this._todoService.isFiltered$,
-  });
+  public filterList = model(false);
+
+  public users$ = this._todoService.users$;
+  public isLoading = this._todoService.isLoading;
+  public todos = this._todoService.filteredToDos;
 
   public onUserSelection(event: MatSelectChange): void {
-    this._todoService.onUserSelection(event.value);
-    // this.filterTodos(false);
+    this._todoService.updateUserSelection(event.value);
   }
 
   public filterTodos(event: MatCheckboxChange): void {
     this._todoService.filterTodos(event.checked);
-  }
-
-  public onToggle(user: User, list: MatSelectionList): void {
-    const todos = list._value as unknown as Todo[];
-    todos.forEach((todo) => (todo.completed = true));
-    user.filteredTodos = todos;
   }
 }
 

@@ -21,10 +21,7 @@ export class TodoService {
     .get<Observable<User[]>>('https://dummyjson.com/users')
     .pipe(
       map((users: any) =>
-        users.users.map(
-          (user: { firstName: string; lastName: string; university: string }) =>
-            this.mapUser(user)
-        )
+        users.users.map((user: { firstName: string; lastName: string; university: string }) => this.mapUser(user))
       )
     );
 
@@ -42,24 +39,26 @@ export class TodoService {
       .subscribe();
   }
 
+  /**
+   * Method not in use
+   * @param status
+   */
   public onTodoCheck(status: boolean): void {
-    this.currentUser$.pipe(
+    this.currentUser$
+      .pipe(
         take(1),
-        tap(user => console.log(user)),
-        switchMap(user => status ? of(user?.todos.filter(todo => todo.completed === status)) : of(user)),
-        tap(user => console.log(user))
-    ).subscribe()
+        tap((user) => console.log(user)),
+        switchMap((user) => (status ? of(user?.todos.filter((todo) => todo.completed === status)) : of(user))),
+        tap((user) => console.log(user))
+      )
+      .subscribe();
   }
 
   public filterTodos(status: boolean): void {
     this.isFiltered.next(status);
   }
 
-  private mapUser(user: {
-    firstName: string;
-    lastName: string;
-    university: string;
-  }): User {
+  private mapUser(user: { firstName: string; lastName: string; university: string }): User {
     return {
       name: `${user.firstName} ${user.lastName}`,
       university: user.university,
@@ -68,26 +67,20 @@ export class TodoService {
         todo: todo,
         completed: false,
       })),
-      filteredTodos: []
+      filteredTodos: [],
     };
   }
 
   private generateRandomString(length: number): string {
-    const characters =
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let result = '';
     for (let i = 0; i < length; i++) {
-      result += characters.charAt(
-        Math.floor(Math.random() * characters.length)
-      );
+      result += characters.charAt(Math.floor(Math.random() * characters.length));
     }
     return result;
   }
 
-  private generateRandomArrayOfStrings(
-    arrayLength: number,
-    stringLength: number
-  ): string[] {
+  private generateRandomArrayOfStrings(arrayLength: number, stringLength: number): string[] {
     const randomArray = [];
     for (let i = 0; i < arrayLength; i++) {
       randomArray.push(this.generateRandomString(stringLength));
@@ -95,3 +88,4 @@ export class TodoService {
     return randomArray;
   }
 }
+

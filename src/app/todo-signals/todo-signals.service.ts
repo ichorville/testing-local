@@ -1,87 +1,99 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { HttpClient } from '@angular/common/http';
-import { inject } from '@angular/core';
+import { computed, inject, signal } from '@angular/core';
 
-import { BehaviorSubject, delay, filter, finalize, map, Observable, of, switchMap, take, tap } from 'rxjs';
+import { map, Observable, Subject, switchMap, tap } from 'rxjs';
 
-import { User } from './todo-signals.model';
+import { ToDoState, User, ToDo } from './todo-signals.model';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 export class TodoSignalsService {
+  /**
+   * We dont change state via effects
+   */
+
   private _http = inject(HttpClient);
 
-  private currentUser = new BehaviorSubject<User | undefined>(undefined);
-  private loading = new BehaviorSubject<boolean>(false);
-  private isFiltered = new BehaviorSubject<boolean>(false);
+  // Current state object, similar to the view model
+  private state = signal<ToDoState>({
+    isLoading: false,
+    currentMember: undefined,
+    memberToDos: [],
+    filteredToDos: [],
+    error: null,
+  });
 
-  public currentUser$ = this.currentUser.asObservable();
-  public isLoading$ = this.loading.asObservable();
-  public isFiltered$ = this.isFiltered.asObservable();
+  private selectedId = new Subject();
+  private selectedId$ = this.selectedId.asObservable();
 
-  public users$: Observable<User[]> = this._http
-    .get<Observable<User[]>>('https://dummyjson.com/users')
-    .pipe(
-      map((users: any) =>
-        users.users.map((user: { firstName: string; lastName: string; university: string }) => this.mapUser(user))
-      )
-    );
+  private hasCompleted = new Subject();
+  private hasCompleted$ = this.hasCompleted.asObservable();
 
-  public onUserSelection(userName: string): void {
-    this.loading.next(true);
-    this.users$
+  // Selectors - selects a specific piece/ slice from the state
+  public isLoading = computed(() => this.state().isLoading);
+  public currentMember = computed(() => this.state().currentMember);
+  public toDos = computed(() => this.state().memberToDos);
+  public filteredToDos = computed(() => this.state().filteredToDos);
+  public error = computed(() => this.state().error);
+
+  constructor() {
+    this.selectedId$
       .pipe(
-        take(1),
-        switchMap((users) => of(users.find((us: User) => us.name === userName))),
-        filter((user) => !!user),
-        tap((user) => this.currentUser.next(user)),
-        delay(3000),
-        finalize(() => this.loading.next(false))
+        tap(() => {
+          this.state.update((state) => ({
+            ...state,
+            isLoading: true,
+          }));
+        }),
+        switchMap((id) =>
+          this.todos$.pipe(
+            map((todos) => todos.filter((todo) => todo.userId === id)),
+            tap((todos) => {
+              this.state.update((state) => ({
+                ...state,
+                isLoading: false,
+                memberToDos: todos,
+                filteredToDos: todos,
+              }));
+            })
+          )
+        ),
+        takeUntilDestroyed()
+      )
+      .subscribe();
+
+    this.hasCompleted$
+      .pipe(
+        map((status) => {
+          this.state.update((state) => ({
+            ...state,
+            filteredToDos:
+              Boolean(status) === true ? this.toDos().filter((todo) => todo.completed === status) : this.toDos(),
+          }));
+        }),
+        takeUntilDestroyed()
       )
       .subscribe();
   }
 
-  public onTodoCheck(status: boolean): void {
-    this.currentUser$
-      .pipe(
-        take(1),
-        tap((user) => console.log(user)),
-        switchMap((user) => (status ? of(user?.todos.filter((todo) => todo.completed === status)) : of(user))),
-        tap((user) => console.log(user))
-      )
-      .subscribe();
+  public updateUserSelection(id: number): void {
+    this.selectedId.next(id);
   }
 
   public filterTodos(status: boolean): void {
-    this.isFiltered.next(status);
+    this.hasCompleted.next(status);
   }
 
-  private mapUser(user: { firstName: string; lastName: string; university: string }): User {
-    return {
-      name: `${user.firstName} ${user.lastName}`,
-      university: user.university,
-      completed: false,
-      todos: this.generateRandomArrayOfStrings(10, 18).map((todo) => ({
-        todo: todo,
-        completed: false,
-      })),
-      filteredTodos: [],
-    };
-  }
+  public todos$: Observable<ToDo[]> = this._http
+    .get<ToDo[]>('https://jsonplaceholder.typicode.com/todos')
+    .pipe(map((todos) => todos));
 
-  private generateRandomString(length: number): string {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let result = '';
-    for (let i = 0; i < length; i++) {
-      result += characters.charAt(Math.floor(Math.random() * characters.length));
-    }
-    return result;
-  }
-
-  private generateRandomArrayOfStrings(arrayLength: number, stringLength: number): string[] {
-    const randomArray = [];
-    for (let i = 0; i < arrayLength; i++) {
-      randomArray.push(this.generateRandomString(stringLength));
-    }
-    return randomArray;
-  }
+  public users$: Observable<User[]> = this._http.get<User[]>('https://jsonplaceholder.typicode.com/users').pipe(
+    map((users) =>
+      users.map((user) => ({
+        id: user.id,
+        name: user.name,
+      }))
+    )
+  );
 }
 
