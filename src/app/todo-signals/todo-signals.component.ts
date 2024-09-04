@@ -1,6 +1,6 @@
 import { Component, inject, model, ViewChild } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
-import { AsyncPipe, NgFor, JsonPipe, NgIf } from '@angular/common';
+import { AsyncPipe, NgFor, JsonPipe, NgIf, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
@@ -19,6 +19,7 @@ import { TodoSignalsService } from './todo-signals.service';
     JsonPipe,
     FormsModule,
     NgIf,
+    NgClass,
     HttpClientModule,
     MatCheckboxModule,
     MatSelectModule,
@@ -37,6 +38,7 @@ export class TodoSignalsComponent {
   public users$ = this._todoService.users$;
   public isLoading = this._todoService.isLoading;
   public todos = this._todoService.filteredToDos;
+  public isFiltered = this._todoService.isFiltered;
 
   public onUserSelection(event: MatSelectChange): void {
     this._todoService.updateUserSelection(event.value);

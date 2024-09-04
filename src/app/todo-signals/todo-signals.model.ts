@@ -17,5 +17,6 @@ export interface ToDoState {
   memberToDos: ToDo[];
   filteredToDos: ToDo[];
   error: string | null;
+  isFiltered: boolean;
 }
 

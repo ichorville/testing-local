@@ -14,12 +14,22 @@
       </ng-container>
     </div>
     <div class="w-1/2">
-      <mat-checkbox [(ngModel)]="filterList" [disabled]="todos().length === 0" (change)="filterTodos($event)"
+      <mat-checkbox
+        [disableRipple]="true"
+        [(ngModel)]="filterList"
+        [disabled]="todos().length === 0"
+        (change)="filterTodos($event)"
         >Filter complete to-do items</mat-checkbox
       >
     </div>
   </div>
-  <div class="container pointer-events-none">
+  <div
+    class="container"
+    [ngClass]="{
+      'pointer-events-none': isFiltered()
+    }"
+  >
+    <p>Total {{ isFiltered() ? "Completed" : "" }} To Dos {{ todos().length | json }}</p>
     <ng-container *ngFor="let todo of todos(); index as i">
       <div class="flex">
         <mat-checkbox [(ngModel)]="todo.completed" class="example-margin">{{ todo.title }}</mat-checkbox>

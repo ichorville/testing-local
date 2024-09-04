@@ -19,22 +19,26 @@ export class TodoSignalsService {
     currentMember: undefined,
     memberToDos: [],
     filteredToDos: [],
+    isFiltered: false,
     error: null,
   });
 
   private selectedId = new Subject();
   private selectedId$ = this.selectedId.asObservable();
 
-  private hasCompleted = new Subject();
-  private hasCompleted$ = this.hasCompleted.asObservable();
-
   // Selectors - selects a specific piece/ slice from the state
   public isLoading = computed(() => this.state().isLoading);
   public currentMember = computed(() => this.state().currentMember);
   public toDos = computed(() => this.state().memberToDos);
-  public filteredToDos = computed(() => this.state().filteredToDos);
   public error = computed(() => this.state().error);
+  public isFiltered = computed(() => this.state().isFiltered);
+  public filteredToDos = computed(() =>
+    this.state().isFiltered === true
+      ? this.state().memberToDos.filter((todo) => todo.completed === true)
+      : this.state().memberToDos
+  );
 
+  // Somewhat like reducer methods that defines actions to update state
   constructor() {
     this.selectedId$
       .pipe(
@@ -60,19 +64,6 @@ export class TodoSignalsService {
         takeUntilDestroyed()
       )
       .subscribe();
-
-    this.hasCompleted$
-      .pipe(
-        map((status) => {
-          this.state.update((state) => ({
-            ...state,
-            filteredToDos:
-              Boolean(status) === true ? this.toDos().filter((todo) => todo.completed === status) : this.toDos(),
-          }));
-        }),
-        takeUntilDestroyed()
-      )
-      .subscribe();
   }
 
   public updateUserSelection(id: number): void {
@@ -80,7 +71,26 @@ export class TodoSignalsService {
   }
 
   public filterTodos(status: boolean): void {
-    this.hasCompleted.next(status);
+    this.state.update((state) => ({
+      ...state,
+      isFiltered: status,
+    }));
+  }
+
+  public updateMemberTodos(todo: ToDo): void {
+    this.state.update((state) => ({
+      ...state,
+      memberToDos: this.returnUpdatedTodos(todo),
+    }));
+  }
+
+  private returnUpdatedTodos(todo: ToDo): ToDo[] {
+    this.toDos().forEach((memberToDo) => {
+      if (memberToDo.id === todo.id) {
+        memberToDo = todo;
+      }
+    });
+    return this.toDos();
   }
 
   public todos$: Observable<ToDo[]> = this._http
