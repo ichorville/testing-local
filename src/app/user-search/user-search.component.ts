@@ -1,4 +1,5 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
@@ -8,8 +9,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
-import { UserSearchService } from './user-search.service';
 import { debounceTime, distinctUntilKeyChanged, switchMap, tap } from 'rxjs';
+
+import { UserSearchService } from './user-search.service';
 
 @Component({
   selector: 'app-root',
@@ -29,6 +31,7 @@ import { debounceTime, distinctUntilKeyChanged, switchMap, tap } from 'rxjs';
   templateUrl: './user-search.component.html',
 })
 export class UserSearchComponent {
+  private readonly _destroyRef = inject(DestroyRef);
   private readonly _userSearchService = inject(UserSearchService);
 
   public hideView = true;
@@ -42,7 +45,8 @@ export class UserSearchComponent {
       debounceTime(300),
       distinctUntilKeyChanged('userName'),
       switchMap((search) => this._userSearchService.findUsers(String(search.userName))),
-      tap((value) => this.filteredUsers.set(value))
+      tap((value) => this.filteredUsers.set(value)),
+      takeUntilDestroyed(this._destroyRef)
     )
     .subscribe();
 }
