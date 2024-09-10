@@ -1,63 +1,66 @@
-<h5>Products</h5>
+<div class="p-4">
+  <h5>Products</h5>
 
-<h5>Getting data from Declarative pattern</h5>
+  <h5>Getting data from Declarative pattern</h5>
 
-@if (products$ | async; as products) {
-{{ products | json }}
-} @else {
-<p>loading products ....</p>
-}
+  @if (products$ | async; as products) {
+  {{ products | json }}
+  } @else {
+  <p>loading products ....</p>
+  }
 
-<hr />
+  <hr />
 
-<h5>Signals</h5>
+  <h5>Signals</h5>
 
-<p>{{ calculatedPrice }}</p>
+  <p>{{ calculatedPrice }}</p>
 
-<p>{{ this._testService.calculated() }}</p>
+  <p>{{ this._testService.calculated() }}</p>
 
-<hr />
+  <hr />
 
-<h5>combineLatest</h5>
+  <h5>combineLatest</h5>
 
-@if (productViewModel | async; as vm) {
-{{ vm.products | json }}
-} @else {
-<p>combineLatest View Model Loading</p>
-}
+  @if (productViewModel | async; as vm) {
+  {{ vm.products | json }}
+  } @else {
+  <p>combineLatest View Model Loading</p>
+  }
 
-<hr />
+  <hr />
 
-<h5>Advanced Signal</h5>
+  <h5>Advanced Signal</h5>
 
-<!-- @if (productViewModelSignal() | async; as vm) {
+  <!-- @if (productViewModelSignal() | async; as vm) {
 {{ vm | json }}
 } @else {
 <p>Signal View Model Loading</p>
 } -->
 
-@if (productViewModelSignal(); as vm) { @if (vm.products | async; as products) {
-<div *ngFor="let product of products">
-  <p>{{ product.value }}</p>
+  @if (productViewModelSignal(); as vm) { @if (vm.products | async; as products) {
+  <div *ngFor="let product of products">
+    <p>{{ product.value }}</p>
+  </div>
+  } @else {
+  <p>Loading Products</p>
+  } @if (vm.applications | async; as applications) {
+  <div *ngFor="let application of applications">
+    <p>{{ application.value }}</p>
+  </div>
+  } @else {
+  <p>Loading Applications</p>
+  } } @else {
+  <p>Loading View model</p>
+  }
+
+  <hr />
+
+  {{ productSignal() | json }}
+
+  @if (productSignal(); as products) { @for (product of products; track product) {
+  <p>{{ product.key }}</p>
+  } } @else {
+  <p>Products Loading</p>
+  }
 </div>
-} @else {
-<p>Loading Products</p>
-} @if (vm.applications | async; as applications) {
-<div *ngFor="let application of applications">
-  <p>{{ application.value }}</p>
-</div>
-} @else {
-<p>Loading Applications</p>
-} } @else {
-<p>Loading View model</p>
-}
 
-<hr />
-
-{{ productSignal() | json }}
-
-@if (productSignal(); as products) { @for (product of products; track product) {
-<p>{{ product.key }}</p>
-} } @else {
-<p>Products Loading</p>
-}

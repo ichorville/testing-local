@@ -1,0 +1,33 @@
+<div class="p-4">
+  <div class="flex">
+    <div class="w-1/2">
+      <button class="mb-4" mat-raised-button color="primary" (click)="hideView = !hideView">
+        {{ hideView ? "Hide" : "Show" }} View
+      </button>
+    </div>
+  </div>
+  <ng-container *ngIf="hideView">
+    <div class="container">
+      <div class="flex">
+        <div class="w-1/2">
+          <!-- search for users -->
+          <mat-form-field class="w-full" [formGroup]="simpleForm">
+            <mat-label>Search user</mat-label>
+            <input matInput type="text" formControlName="userName" />
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="grid">
+        <ng-container *ngIf="filteredUsers() as users">
+          <!-- total filtered users -->
+          <p>{{ users.length }} users found</p>
+          <!-- list of filtered users -->
+          <ng-container *ngFor="let user of users">
+            <p>{{ user }}</p>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
