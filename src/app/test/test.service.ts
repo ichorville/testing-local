@@ -54,3 +54,4 @@ export class TestService {
     this.priceX.set(value);
   }
 }
+

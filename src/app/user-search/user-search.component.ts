@@ -34,6 +34,8 @@ export class UserSearchComponent {
   private readonly _destroyRef = inject(DestroyRef);
   private readonly _userSearchService = inject(UserSearchService);
 
+  public users = this._userSearchService.users$;
+
   public hideView = true;
   public filteredUsers = signal<string[]>([]);
   public simpleForm = new FormGroup({

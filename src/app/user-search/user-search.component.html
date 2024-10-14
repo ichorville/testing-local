@@ -1,15 +1,23 @@
 <div class="p-4">
   <div class="flex">
-    <div class="w-1/2">
+    <div class="w-full">
       <button class="mb-4" mat-raised-button color="primary" (click)="hideView = !hideView">
         {{ hideView ? "Hide" : "Show" }} View
       </button>
     </div>
   </div>
+
+  <!-- Code not relevant here, just to check if users endpoint is called multiple times
+  but does not happen due to shareReplay operator  -->
+  <!-- <ng-container *ngIf="(users | async) && hideView">
+    <ng-container> {{ (users | async)?.length }}</ng-container>
+    <ng-container> {{ (users | async)?.length }}</ng-container>
+  </ng-container> -->
+
   <ng-container *ngIf="hideView">
     <div class="container">
       <div class="flex">
-        <div class="w-1/2">
+        <div class="w-full">
           <!-- search for users -->
           <mat-form-field class="w-full" [formGroup]="simpleForm">
             <mat-label>Search user</mat-label>

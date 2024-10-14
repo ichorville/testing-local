@@ -6,10 +6,27 @@ import { UserDTO } from './user-search.model';
 export class UserSearchService {
   private _http = inject(HttpClient);
 
+  /**
+     * example code to check how shareReplay works when the view is destroyed. to destroy the view in this example app
+     * simply navigate to a different route. If we dont have the bufferSize and refCount defined, the additional http requests 
+     * are still fired though the component is destroyed
+     * 
+     public users$: Observable<any[]> = this._http.get<UserDTO[]>('https://jsonplaceholder.typicode.com/users').pipe(
+      map((users) => users.map((user) => user.name)),
+       switchMap(() =>
+        timer(0, 2000).pipe(
+          switchMap(() => this._http.get<UserDTO[]>('https://jsonplaceholder.typicode.com/users').pipe(take(1)))
+        )
+       ),
+      catchError(() => of([])),
+      shareReplay({ bufferSize: 1, refCount: true })
+     );
+     */
+
   public users$: Observable<string[]> = this._http.get<UserDTO[]>('https://jsonplaceholder.typicode.com/users').pipe(
     map((users) => users.map((user) => user.name)),
     catchError(() => of([])),
-    shareReplay(1)
+    shareReplay({ bufferSize: 1, refCount: true })
   );
 
   /**
