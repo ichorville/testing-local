@@ -1,5 +1,4 @@
 import { Component, inject, ViewChild } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
 import { AsyncPipe, NgFor, JsonPipe } from '@angular/common';
 
 import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
@@ -15,16 +14,7 @@ import { Todo, User, ViewModel } from './todo.model';
 @Component({
   selector: 'app-todo',
   standalone: true,
-  imports: [
-    AsyncPipe,
-    NgFor,
-    JsonPipe,
-    HttpClientModule,
-    MatCheckboxModule,
-    MatSelectModule,
-    MatFormFieldModule,
-    MatListModule,
-  ],
+  imports: [AsyncPipe, NgFor, JsonPipe, MatCheckboxModule, MatSelectModule, MatFormFieldModule, MatListModule],
   providers: [TodoService],
   templateUrl: './todo.component.html',
 })

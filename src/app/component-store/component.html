@@ -1,0 +1,14 @@
+@if (moviesCS$ | async; as movies) {
+<p>Movies from Legit Component store</p>
+<li *ngFor="let movie of movies">
+  <pre>{{ movie | json }}</pre>
+</li>
+}
+<hr class="mt-4 mb-4" />
+@if (moviesMS$ | async; as movies) {
+<p>Movies from Abstract Movie store</p>
+<li *ngFor="let movie of movies">
+  <pre>{{ movie | json }}</pre>
+</li>
+}
+
