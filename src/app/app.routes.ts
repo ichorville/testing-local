@@ -6,6 +6,7 @@ import { TodoSignalsComponent } from './todo-signals/todo-signals.component';
 import { UserSearchComponent } from './user-search/user-search.component';
 import { ListComponent } from './tour-of-heroes/list/list.component';
 import { MoviesComponent } from './component-store/component';
+import { PanelsComponent } from './panels/panels.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/test', pathMatch: 'full' },
@@ -15,5 +16,6 @@ export const routes: Routes = [
   { path: 'user-search', component: UserSearchComponent },
   { path: 'toh', component: ListComponent },
   { path: 'component-store', component: MoviesComponent },
+  { path: 'panels', component: PanelsComponent },
 ];
 

@@ -1,11 +1,13 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { ComponentStore } from '@ngrx/component-store';
 
 import { Movie, MovieState } from './model';
-import { Observable, of } from 'rxjs';
+import { catchError, EMPTY, Observable, of, switchMap, take, tap } from 'rxjs';
+import { MovieService } from './service';
 
 @Injectable()
 export class MovieStore extends ComponentStore<MovieState> {
+  private readonly movieService = inject(MovieService);
   constructor() {
     super({ movies: [], userPreferredMovieIds: [], currentPageIndex: 0, moviesPerPage: 10 });
 
@@ -51,5 +53,26 @@ export class MovieStore extends ComponentStore<MovieState> {
   //   console.log(movies$)
   //   return of({} as any)
   // })
+
+  public readonly addMovie = this.updater((state, movie: Movie) => ({
+    ...state,
+    movies: [...state.movies, movie],
+  }));
+
+  // A side effect to fetch a movie by ID, but in this case Ive hardcoded a simple
+  // value to be returned and its added to the main Movie state with the addMovie updater
+  public readonly getMovie = this.effect((movieId$: Observable<string>) => {
+    return movieId$.pipe(
+      switchMap((id) =>
+        this.movieService.getMovie(id).pipe(
+          take(1),
+          tap((movie) => this.addMovie(movie)),
+          catchError(() => EMPTY)
+        )
+      )
+    );
+  });
+
+  public readonly selectMovie = (id: string) => this.select((state) => state.movies.find((movie) => movie.id === id)) as Observable<Movie>;
 }
 

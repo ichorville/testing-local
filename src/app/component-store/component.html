@@ -1,14 +1,50 @@
-@if (moviesCS$ | async; as movies) {
-<p>Movies from Legit Component store</p>
-<li *ngFor="let movie of movies">
-  <pre>{{ movie | json }}</pre>
-</li>
-}
-<hr class="mt-4 mb-4" />
-@if (moviesMS$ | async; as movies) {
-<p>Movies from Abstract Movie store</p>
-<li *ngFor="let movie of movies">
-  <pre>{{ movie | json }}</pre>
-</li>
-}
+<div class="m-4">
+  @if (moviesCS$ | async; as movies) {
+  <p>Movies from Legit Component store</p>
+  <ng-container *ngFor="let movie of movies">
+    <ng-container *ngTemplateOutlet="movieTemplate; context: {movie}"></ng-container>
+  </ng-container>
+  }
+  <hr class="mt-4 mb-4" />
+  <ng-container *ngIf="moviesMS$ | async as movies">
+    <div class="flex">
+      <div class="w-1/2">
+        <button class="mb-2" mat-flat-button (click)="addMovie()">Add Movie</button>
+        <p>Movies from Abstract Movie store</p>
+      </div>
+      <div class="w-1/2 flex justify-end">
+        <ng-container *ngIf="(movie$ | async) as movie">
+          <mat-card appearance="outlined" class="m-4 ml-0 mr-0">
+            <mat-card-header>
+              <mat-card-title>{{ movie.name }}</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="flex">
+                <div class="w-1/2">{{ movie.id }}</div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </ng-container>
+      </div>
+    </div>
+
+    <ng-container *ngFor="let movie of movies">
+      <ng-container *ngTemplateOutlet="movieTemplate; context: {movie}"></ng-container>
+    </ng-container>
+  </ng-container>
+</div>
+
+<ng-template #movieTemplate let-movie="movie">
+  <mat-card appearance="outlined" class="m-4 ml-0 mr-0" (click)="selectMovie(movie)">
+    <mat-card-header>
+      <mat-card-title>{{ movie.name }}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="flex">
+        <div class="w-1/2">{{ movie.id }}</div>
+        <div class="w-1/2 flex justify-end">✅</div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</ng-template>
 

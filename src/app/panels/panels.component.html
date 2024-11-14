@@ -1,0 +1,33 @@
+<mat-tab-group animationDuration="0ms" class="m-2">
+  <mat-tab label="signals">
+    <div *ngIf="allSignalsLoaded" class="mt-4 ml-4">✅ All panels loaded</div>
+    <ng-container *ngFor="let panel of signalPanels()">
+      <ng-container *ngTemplateOutlet="panelTemplate; context: { panel }"></ng-container> </ng-container
+  ></mat-tab>
+  <mat-tab label="rxjs">
+    <div *ngIf="allRxjsLoaded" class="mt-4 ml-4">✅ All panels loaded</div>
+    <ng-container *ngFor="let panel of (rxjsPanels | async) as panels">
+      <ng-container *ngTemplateOutlet="panelTemplate; context: { panel }"></ng-container>
+    </ng-container>
+  </mat-tab>
+</mat-tab-group>
+
+<ng-template #panelTemplate let-panel="panel">
+  <mat-card appearance="outlined" class="m-4">
+    <mat-card-header>
+      <mat-card-title>{{ panel.title }}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <ng-container *ngIf="!panel.body">Loading</ng-container>
+      <ng-container *ngIf="panel.body">
+        <div class="flex">
+          <div class="w-1/2">
+            {{ panel.body }}
+          </div>
+          <div class="w-1/2 flex justify-end">✅</div>
+        </div>
+      </ng-container>
+    </mat-card-content>
+  </mat-card>
+</ng-template>
+
