@@ -1,22 +1,17 @@
-<nav>
-  <a class="button" routerLink="/test" routerLinkActive="activeButton" ariaCurrentWhenActive="page">Test App</a>
-  <p class="inline-block !ml-4 !mr-4">|</p>
-  <a class="button" routerLink="/todo" routerLinkActive="activeButton" ariaCurrentWhenActive="page">To-do App</a>
-  <p class="inline-block !ml-4 !mr-4">|</p>
-  <a class="button" routerLink="/todo-signals" routerLinkActive="activeButton" ariaCurrentWhenActive="page"
-    >To-do Signals</a
-  >
-  <p class="inline-block !ml-4 !mr-4">|</p>
-  <a class="button" routerLink="/user-search" routerLinkActive="activeButton" ariaCurrentWhenActive="page"
-    >User Search</a
-  >
-  <p class="inline-block !ml-4 !mr-4">|</p>
-  <a class="button" routerLink="/toh" routerLinkActive="activeButton" ariaCurrentWhenActive="page">Tour of Heroes</a>
-  <p class="inline-block !ml-4 !mr-4">|</p>
-  <a class="button" routerLink="/component-store" routerLinkActive="activeButton" ariaCurrentWhenActive="page">Component Store</a>
-  <p class="inline-block !ml-4 !mr-4">|</p>
-  <a class="button" routerLink="/panels" routerLinkActive="activeButton" ariaCurrentWhenActive="page">Panels</a>
-</nav>
-<hr />
+<mat-toolbar class="!bg-slate-950">
+  <button mat-icon-button class="example-icon" [matMenuTriggerFor]="menu">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <p class="!mb-0 text-xs text-white">{{ title }}</p>
+  <span class="flex-auto"></span>
+  <p class="!mb-0 text-xs text-white">Select example you want to run</p>
+  <mat-menu #menu="matMenu">
+    <ng-container *ngFor="let route of routes">
+      <button mat-menu-item [routerLink]="route.path" routerLinkActive="!bg-slate-300" (click)="title = route.title">
+        {{ route.title }}
+      </button>
+    </ng-container>
+  </mat-menu>
+</mat-toolbar>
 <router-outlet></router-outlet>
 

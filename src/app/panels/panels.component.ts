@@ -84,5 +84,9 @@ export class PanelsComponent implements OnInit {
     const firstPanel = this.signalPanels().find((panel) => panel.title === 'Title 1');
     console.log(firstPanel);
   }
+
+  public getStarted(): void {
+    console.log('get started');
+  }
 }
 

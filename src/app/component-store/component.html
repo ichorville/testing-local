@@ -10,6 +10,7 @@
     <div class="flex">
       <div class="w-1/2">
         <button class="mb-2" mat-flat-button (click)="addMovie()">Add Movie</button>
+        <button class="mb-2 ml-2" mat-flat-button (click)="reset()" [disabled]="movies.length === 0">Reset</button>
         <p>Movies from Abstract Movie store</p>
       </div>
       <div class="w-1/2 flex justify-end">

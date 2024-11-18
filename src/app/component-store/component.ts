@@ -87,5 +87,11 @@ export class MoviesComponent implements OnInit {
     this.movieStore.getMovie(movie.id);
     this.movie$ = this.movieStore.selectMovie(movie.id);
   }
+
+  public reset(): void {
+    this.movieStore.patchState(() => ({
+      movies: [],
+    }));
+  }
 }
 
