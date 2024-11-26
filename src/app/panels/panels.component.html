@@ -6,7 +6,7 @@
   ></mat-tab>
   <mat-tab label="rxjs">
     <div *ngIf="allRxjsLoaded" class="mt-4 ml-4">✅ All panels loaded</div>
-    <ng-container *ngFor="let panel of (rxjsPanels | async) as panels">
+    <ng-container *ngFor="let panel of rxjsPanels | async as panels">
       <ng-container *ngTemplateOutlet="panelTemplate; context: { panel }"></ng-container>
     </ng-container>
   </mat-tab>

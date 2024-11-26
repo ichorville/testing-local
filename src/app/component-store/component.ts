@@ -89,9 +89,10 @@ export class MoviesComponent implements OnInit {
   }
 
   public reset(): void {
-    this.movieStore.patchState(() => ({
-      movies: [],
-    }));
+    // this.movieStore.patchState(() => ({
+    //   movies: [],
+    // }));
+    this.movieStore.reset();
   }
 }
 

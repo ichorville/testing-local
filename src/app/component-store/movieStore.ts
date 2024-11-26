@@ -59,6 +59,11 @@ export class MovieStore extends ComponentStore<MovieState> {
     movies: [...state.movies, movie],
   }));
 
+  public readonly reset = this.updater((state) => ({
+    ...state,
+    movies: []
+  }))
+
   // A side effect to fetch a movie by ID, but in this case Ive hardcoded a simple
   // value to be returned and its added to the main Movie state with the addMovie updater
   public readonly getMovie = this.effect((movieId$: Observable<string>) => {

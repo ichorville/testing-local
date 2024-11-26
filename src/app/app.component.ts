@@ -37,6 +37,7 @@ export class AppComponent {
     { path: '/toh', title: 'Tour of Heroes' },
     { path: '/component-store', title: 'Component Store' },
     { path: '/panels', title: 'Panels' },
+    { path: '/slide-toggle-example', title: 'Slide Toggle Example' },
   ];
 
   title = (this.routes.find((route) => route.path === window.location.pathname) as Route).title;
