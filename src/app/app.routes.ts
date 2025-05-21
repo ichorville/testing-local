@@ -8,6 +8,8 @@ import { ListComponent } from './tour-of-heroes/list/list.component';
 import { MoviesComponent } from './component-store/component';
 import { PanelsComponent } from './panels/panels.component';
 import { SlideToggleTestComponent } from './slide-toggle/slide-toggle.component';
+import { PaginatorComponent } from './paginator/paginator.component';
+import { SignalStoreComponent } from './signal-store/signal-store.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'test', pathMatch: 'full' },
@@ -19,5 +21,7 @@ export const routes: Routes = [
   { path: 'component-store', component: MoviesComponent },
   { path: 'panels', component: PanelsComponent },
   { path: 'slide-toggle-example', component: SlideToggleTestComponent },
+  { path: 'paginator', component: PaginatorComponent },
+  { path: 'signal-store', component: SignalStoreComponent },
 ];
 

@@ -38,6 +38,8 @@ export class AppComponent {
     { path: '/component-store', title: 'Component Store' },
     { path: '/panels', title: 'Panels' },
     { path: '/slide-toggle-example', title: 'Slide Toggle Example' },
+    { path: '/paginator', title: 'Paginator' },
+    { path: '/signal-store', title: 'Signal Store' },
   ];
 
   title = (this.routes.find((route) => route.path === window.location.pathname) as Route).title;
